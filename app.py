@@ -65,7 +65,11 @@ with open(r"C:\Users\home\Desktop\py\CLINCAL_TRIMED_APID9617_MERGE.sh", "rt") as
     with open(r"C:\Users\home\Desktop\py\log.txt", "wt") as fout:
         i = 0
         j = 0
+        count=0
+        start=0
+        end=0
         for line in fin:
+            count=count+1
             if line.startswith('bteq') and 'EOF' in line:
                 j = 1
             elif 'EOF' in line:
@@ -77,27 +81,21 @@ with open(r"C:\Users\home\Desktop\py\CLINCAL_TRIMED_APID9617_MERGE.sh", "rt") as
 
                 if line.startswith('#'):
                     line = ''
-                elif line.startswith('/*') or line.startswith('*') :
+                elif line.startswith('/*') or line.endswith('*/') :
                     line = ''
-                    for line in fin:
-                        if line.strip().startswith("/*") and line.strip().endswith("*/"):
-                            line=""
-                        if  not line.strip().startswith("*") and line.strip().endswith("*/"):
-                            line=""
-                        if  line.strip().startswith("*") and line.strip().endswith("*/"):
-                            line=""
-                            break
+                elif line.startswith('/*') or line.endswith('*') :
+                    line = ''
+                    start=count
+                    print(start)
+                elif line.startswith('*') or line.startswith('*/') :
+                    line = ''
+                    end=count
+                    print(end)
+
+
 
 
                 else:
-
-                    if  '\$' and ';' in line:
-                        d=line.find('$')
-                        c=line.find(';')
-                        v= line[d:c]
-                        print(v)
-                        storeDollar.append(v)
-
                     for s in exp_value.keys():
                         if s in parmline:
                             if '$LOGON/$LOGON_ID' in line:
@@ -105,6 +103,6 @@ with open(r"C:\Users\home\Desktop\py\CLINCAL_TRIMED_APID9617_MERGE.sh", "rt") as
 
                             else:
                                 line = line.replace(s, exp_value.get(s))
-            #fout.write(line)
+            fout.write(line)
 
 exp_value = {}
